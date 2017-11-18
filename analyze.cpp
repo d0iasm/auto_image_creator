@@ -1,12 +1,13 @@
 #include <clocale>
+#include <locale>
 #include <iostream>
 #include <mecab.h>
 #include <string>
 
 int main() {
-  std::setlocale(LC_ALL, "Japanese");
+  std::setlocale( LC_CTYPE, "ja_JP.UTF-8");
 
-  char input[1024] = "²æÇÚ¤ÏÇ­¤Ç¤¢¤ë¡£";
+  char input[1024] = "æˆ‘è¼©ã¯çŒ«ã§ã‚ã‚‹ã€‚";
 
   std::cout << input << std::endl;
 
