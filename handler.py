@@ -9,21 +9,15 @@ AT = config._ACCESS_TOKEN
 ATS = config._ACCESS_TOKEN_SECRET
 twitter = OAuth1Session(CK, CS, AT, ATS)
 
-url = "https://api.twitter.com/1.1/search/tweets.json"
-
-print("Which words do you want to search?")
-keyword = input('>> ')
-print('----------------------------------------------------')
-
-params = {'q' : keyword, 'count' : 5}
-
-req = twitter.get(url, params = params)
+req = twitter.get('https://api.twitter.com/1.1/search/tweets.json',
+                  params = {'q' : 'to:imageapptest', 'count' : 5})
 
 if req.status_code == 200:
+    print('----------------------------------------------------')
     search_timeline = json.loads(req.text)
     for tweet in search_timeline['statuses']:
         print(tweet['user']['name'] + '::' + tweet['text'])
         print(tweet['created_at'])
         print('----------------------------------------------------')
 else:
-    print("ERROR: %d" % req.status_code)
+    print('ERROR: %d' % req.status_code)
