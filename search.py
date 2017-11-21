@@ -35,29 +35,23 @@ def getImage(images):
             continue
 
 
-def getData():
-
-    pageLimit = 5
+def getData(words):
     service = getService()
-    startIndex = 1
     response = []
     images = []
 
-    for nPage in range(pageLimit):
-        print('Reading page number:', nPage+1)
+    for word in words:
+        print('Reading:', word)
 
         try:
             
             response.append(service.cse().list(
-                q= '猫',
+                q= word,
                 cx= config._CUSTOM_SEARCH_ENGINE,
                 lr= 'lang_ja',
                 num = 1,
-                start=startIndex,
                 searchType = 'image'
                 ).execute())
-
-            startIndex = response[nPage].get('queries').get('nextPage')[0].get('startIndex')
 
         except Exception as e:
             print(e)
@@ -72,5 +66,6 @@ def getData():
 
     return images
 
-            
-getImage(getData())
+
+words = input('Which words do you want to search? > ').split()
+getImage(getData(words))
