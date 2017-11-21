@@ -34,7 +34,7 @@ std::vector<std::string> split(const std::string &str, char delim) {
 }
 
 
-std::string filterNoun(const MeCab::Node *node, const int input_size) {
+std::string filterNoun(const MeCab::Node *node, char *input) {
   std::string filtered;
 
   std::string feature;
@@ -45,8 +45,15 @@ std::string filterNoun(const MeCab::Node *node, const int input_size) {
     if (noun[0] == "名詞") {
       // filtered = filtered + '\n' + (node->surface - *input);
       std::cout << node->surface <<std::endl;
-      std::cout << (node->surface - input_size + node->length) <<std::endl;
-      std::cout << (node->surface - input_size) <<std::endl;
+      std::cout << (int)(node->surface - input + node->length) <<std::endl;
+      std::cout << (int)(node->surface - input) <<std::endl;
+      std::cout << node->rcAttr <<std::endl;
+      std::cout << node->lcAttr <<std::endl;
+      std::cout << node->alpha <<std::endl;
+      std::cout << node->posid <<std::endl;
+      std::cout << node->beta <<std::endl;
+      std::cout << node->prob <<std::endl;
+      std::cout << node->cost <<std::endl;
       std::cout << "-----" <<std::endl;
     }
   }
@@ -55,22 +62,22 @@ std::string filterNoun(const MeCab::Node *node, const int input_size) {
 }
 
 
-int main() {
+int main(int argc, char* argv[]) {
   std::setlocale(LC_CTYPE, "ja_JP.UTF-8");
 
-  std::string input;
-  std::cin >> input;
-  char c_input[1024];
-  input.copy(c_input, input.size());
+  // char input[1024];
+  // std::cin >> input;
 
-  MeCab::Tagger *tagger = MeCab::createTagger("");
-  const MeCab::Node *node = tagger->parseToNode(c_input);
-  std::string filtered = filterNoun(node, input.length());
-  std::cout << filtered << std::endl;
-  delete tagger;
+  // MeCab::Tagger *tagger = MeCab::createTagger("");
+  // const MeCab::Node *node = tagger->parseToNode(input);
+  // std::string filtered = filterNoun(node, input);
+  // std::cout << filtered << std::endl;
+  // delete tagger;
 
+  char input[1024] = "吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。 何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは…";
   MeCab::Tagger *wakati = MeCab::createTagger("-Owakati");
-  const char *res = wakati->parse(c_input);
+  // const char *res = wakati->parse(argv[1]);
+  const char *res = wakati->parse(input);
   std::cout << res << std::endl;
   delete wakati;
 
