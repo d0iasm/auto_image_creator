@@ -4,5 +4,6 @@ analyze: analyze.cpp
 	# rm -f *.o analyze
 
 processing: processing.cpp
-	g++ -o processing.out processing.cpp -I/usr/local/include/opencv2 -I/usr/local/include/opencv -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui
+	g++ -Wall -o processing.out processing.cpp -I/usr/local/include/opencv2 -I/usr/local/include/opencv -L/usr/local/lib -lopencv_core -lopencv_imgcodecs -lopencv_highgui `pkg-config --cflags --libs opencv`
+
 
