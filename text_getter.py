@@ -15,16 +15,16 @@ def getData(count):
 
     text = []
     if req.status_code == 200:
-        print('----------------------------------------------------')
+        # print('----------------------------------------------------')
         search_timeline = json.loads(req.text)
         for tweet in search_timeline['statuses']:
             text.append(tweet['text'])
-            print(tweet['user']['name'] + '::' + tweet['text'])
-            print(tweet['created_at'])
-            print('----------------------------------------------------')
+            # print(tweet['user']['name'] + '::' + tweet['text'])
+            # print(tweet['created_at'])
+            # print('----------------------------------------------------')
     else:
         print('ERROR: %d' % req.status_code)
 
     return text
 
-print(getData(1))
+print(getData(1)[0].split()[1])
