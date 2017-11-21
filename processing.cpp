@@ -10,6 +10,36 @@ cv::Mat createNewbg() {
 }
 
 
+cv::Mat colorThresholding(const cv::Mat &img) {
+  cv::Mat gray, result;
+  
+  cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY); 
+  cv::threshold(gray, result, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+  cv::cvtColor(result, result, cv::COLOR_GRAY2RGB);
+  
+  cv::MatIterator_<cv::Vec3b> itr = result.begin<cv::Vec3b>();
+  cv::MatIterator_<cv::Vec3b> itr_end = result.end<cv::Vec3b>();
+  for (; itr!=itr_end; itr++) {
+    if ((*itr)[0] == 255) {
+      (*itr)[0] = 0;
+      (*itr)[1] = 0;
+      (*itr)[2] = 255;
+    } else {
+      (*itr)[0] = 255;
+      (*itr)[1] = 0;
+      (*itr)[2] = 0;
+    }
+  }
+
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  cv::imshow("image", result);
+  cv::waitKey(0);
+  cv::destroyAllWindows();
+
+  return result;
+}
+
+
 cv::Mat pasteImage(const cv::Mat &bg, const cv::Mat &img, const int tx, const int ty) {
   cv::Mat result;
   bg.copyTo(result);
@@ -36,7 +66,7 @@ int main(void) {
 
   for (int i=0; i<501; i+=500) {
     for (int j=0; j<501; j+=500) {
-      result = pasteImage(result, resize, i, j);
+      result = pasteImage(result, colorThresholding(resize), i, j);
     }
   }
  
