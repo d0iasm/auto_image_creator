@@ -1,9 +1,9 @@
-#include <array>
+#include <iostream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/opencv.hpp>
-#include <iostream>
+#include <random>
 
 
 cv::Mat createNewbg() {
@@ -11,13 +11,11 @@ cv::Mat createNewbg() {
 }
 
 
-std::array<int, 3> randomColor(int num){
-  if (num == 0) {
-    return {255, 0, 0};
-  } else if (num == 1) {
-    return {0, 255, 0};
-  }
-  return {0, 0, 255};
+cv::Vec3b randomColor(){ 
+  std::random_device seed;
+  std::mt19937 mt(seed());
+  std::uniform_int_distribution<int> rand5(0, 1);
+  return cv::Vec3b(rand5(mt) * 255, rand5(mt) * 255, rand5(mt) * 255);
 }
 
 
@@ -27,39 +25,18 @@ cv::Mat colorThresholding(const cv::Mat &img) {
   cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY); 
   cv::threshold(gray, result, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
   cv::cvtColor(result, result, cv::COLOR_GRAY2RGB);
-  
-  // cv::MatIterator_<cv::Vec3b> itr = result.begin<cv::Vec3b>();
-  // cv::MatIterator_<cv::Vec3b> itr_end = result.end<cv::Vec3b>();
-  // std::array<int, 3> front_color = randomColor(0);
-  // std::array<int, 3> back_color = randomColor(1);
-  // for (; itr!=itr_end; itr++) {
-  // if ((*itr)[0] == 255) {
-  // (*itr)[0] = 255;
-  // (*itr)[1] = 0;
-  // (*itr)[2] = 0;
-  // } else {
-  // (*itr)[0] = 0;
-  // (*itr)[1] = 255;
-  // (*itr)[2] = 255;
-  // }
-  // }
 
-  for(int y = 0; y < result.rows; y++){
-    for(int x = 0; x < result.cols; x++){
-      for(int c = 0; c < result.channels(); c++){
-        if (c==0 && result.data[y * result.step + x * result.elemSize() + c] == 255) {
-          result.data[y * result.step + x * result.elemSize() + c] = 255;
-        } else {
-          result.data[y * result.step + x * result.elemSize() + c] = 0;
-        }
+  cv::Vec3b white = randomColor();
+  cv::Vec3b black = randomColor();
+  for(int y = 0; y < result.rows; y++) {
+    for(int x = 0; x < result.cols; x++) {
+      if (result.data[y * result.step + x * result.elemSize()] == 255) {
+        result.at<cv::Vec3b>(y, x) = white;
+      } else {
+        result.at<cv::Vec3b>(y, x) = black;
       }
     }
   }
-
-  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
-  cv::imshow("image", result);
-  cv::waitKey(0);
-  cv::destroyAllWindows();
 
   return result;
 }
