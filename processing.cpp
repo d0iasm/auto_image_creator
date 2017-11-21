@@ -1,3 +1,4 @@
+#include <array>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
@@ -10,6 +11,16 @@ cv::Mat createNewbg() {
 }
 
 
+std::array<int, 3> randomColor(int num){
+  if (num == 0) {
+    return {255, 0, 0};
+  } else if (num == 1) {
+    return {0, 255, 0};
+  }
+  return {0, 0, 255};
+}
+
+
 cv::Mat colorThresholding(const cv::Mat &img) {
   cv::Mat gray, result;
   
@@ -17,17 +28,31 @@ cv::Mat colorThresholding(const cv::Mat &img) {
   cv::threshold(gray, result, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
   cv::cvtColor(result, result, cv::COLOR_GRAY2RGB);
   
-  cv::MatIterator_<cv::Vec3b> itr = result.begin<cv::Vec3b>();
-  cv::MatIterator_<cv::Vec3b> itr_end = result.end<cv::Vec3b>();
-  for (; itr!=itr_end; itr++) {
-    if ((*itr)[0] == 255) {
-      (*itr)[0] = 0;
-      (*itr)[1] = 0;
-      (*itr)[2] = 255;
-    } else {
-      (*itr)[0] = 255;
-      (*itr)[1] = 0;
-      (*itr)[2] = 0;
+  // cv::MatIterator_<cv::Vec3b> itr = result.begin<cv::Vec3b>();
+  // cv::MatIterator_<cv::Vec3b> itr_end = result.end<cv::Vec3b>();
+  // std::array<int, 3> front_color = randomColor(0);
+  // std::array<int, 3> back_color = randomColor(1);
+  // for (; itr!=itr_end; itr++) {
+  // if ((*itr)[0] == 255) {
+  // (*itr)[0] = 255;
+  // (*itr)[1] = 0;
+  // (*itr)[2] = 0;
+  // } else {
+  // (*itr)[0] = 0;
+  // (*itr)[1] = 255;
+  // (*itr)[2] = 255;
+  // }
+  // }
+
+  for(int y = 0; y < result.rows; y++){
+    for(int x = 0; x < result.cols; x++){
+      for(int c = 0; c < result.channels(); c++){
+        if (c==0 && result.data[y * result.step + x * result.elemSize() + c] == 255) {
+          result.data[y * result.step + x * result.elemSize() + c] = 255;
+        } else {
+          result.data[y * result.step + x * result.elemSize() + c] = 0;
+        }
+      }
     }
   }
 
