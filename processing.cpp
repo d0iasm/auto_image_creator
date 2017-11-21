@@ -4,6 +4,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/opencv.hpp>
 #include <random>
+#include <string>
 
 
 cv::Mat createNewbg() {
@@ -50,28 +51,39 @@ cv::Mat pasteImage(const cv::Mat &bg, const cv::Mat &img, const int tx, const in
   cv::warpAffine(img, result, mat, result.size(), CV_INTER_LINEAR, cv::BORDER_TRANSPARENT);
 
   return result;
-} 
+}
 
 
-int main(void) {
-  cv::Mat src = cv::imread("images/1.jpg", cv::IMREAD_COLOR);
+cv::Mat openImage(const std::string name) {
+  cv::Mat src = cv::imread(name, cv::IMREAD_COLOR);
 
   if (src.empty()) {
     std::cerr << "Fialed to open an image file." << std::endl;
-    return -1;
   }
 
-  cv::Mat resize;
-  cv::resize(src, resize, cv::Size(500, 500));
+  return src;
+}
+
+
+int main(void) {
+  cv::Mat src1 = openImage("images/1.jpg");
+  cv::Mat src2 = openImage("images/2.jpg");
+  cv::Mat src3 = openImage("images/3.jpg");
+  cv::Mat src4 = openImage("images/4.jpg");
+
+  cv::Mat resize1, resize2, resize3, resize4;
+  cv::resize(src1, resize1, cv::Size(500, 500));
+  cv::resize(src2, resize2, cv::Size(500, 500));
+  cv::resize(src3, resize3, cv::Size(500, 500));
+  cv::resize(src4, resize4, cv::Size(500, 500));
   
   cv::Mat result = createNewbg();
 
-  for (int i=0; i<501; i+=500) {
-    for (int j=0; j<501; j+=500) {
-      result = pasteImage(result, colorThresholding(resize), i, j);
-    }
-  }
- 
+  result = pasteImage(result, colorThresholding(resize1), 0, 0);
+  result = pasteImage(result, colorThresholding(resize2), 500, 0);
+  result = pasteImage(result, colorThresholding(resize3), 0, 500);
+  result = pasteImage(result, colorThresholding(resize4), 500, 500);
+
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   cv::imshow("image", result);
   cv::imwrite("dest/result.jpg", result);
