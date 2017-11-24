@@ -40,7 +40,6 @@ std::string filterNoun(const MeCab::Node *node) {
   for (; node; node = node->next) {
     feature = split(node->feature, ',');
     if (feature[0] == "名詞") {
-      std::cout << feature[6] << std::endl;
       filtered.append(feature[6] + " ");
     }
   }

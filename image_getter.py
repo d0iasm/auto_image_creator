@@ -12,11 +12,10 @@ _IMAGES_PATH = './images/'
 def getService():
     service = build('customsearch', 'v1',
                     developerKey=config._IMAGE_API_KEY)
-
     return service
 
 
-def getImage(images):
+def saveImages(images):
     if not os.path.isdir(_IMAGES_PATH):
         os.mkdir(_IMAGES_PATH)
 
@@ -40,6 +39,7 @@ def getData(words):
     response = []
     images = []
 
+    print(words)
     for word in words:
         print('Reading:', word)
 
@@ -64,4 +64,4 @@ def getData(words):
 
 
 words = input('Which words do you want to search? > ').split()
-getImage(getData(words))
+saveImages(getData(words))

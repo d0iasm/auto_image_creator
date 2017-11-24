@@ -58,7 +58,7 @@ cv::Mat openImage(const std::string name) {
   cv::Mat src = cv::imread(name, cv::IMREAD_COLOR);
 
   if (src.empty()) {
-    std::cerr << "Fialed to open an image file." << std::endl;
+    std::cerr << "Fialed to open an images file." << std::endl;
   }
 
   return src;
