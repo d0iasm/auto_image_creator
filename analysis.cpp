@@ -62,7 +62,7 @@ std::string filterNoun(const MeCab::Node *node, char *input) {
 }
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char **argv) {
   std::setlocale(LC_CTYPE, "ja_JP.UTF-8");
 
   // char input[1024];
@@ -74,10 +74,11 @@ int main(int argc, char* argv[]) {
   // std::cout << filtered << std::endl;
   // delete tagger;
 
-  char input[1024] = "吾輩は猫である。名前はまだ無い。どこで生れたかとんと見当がつかぬ。 何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは…";
+  // std::cout << argv[1] << std::endl;
+  // char input[1024] = "吾輩は猫である。";
   MeCab::Tagger *wakati = MeCab::createTagger("-Owakati");
   // const char *res = wakati->parse(argv[1]);
-  const char *res = wakati->parse(input);
+  const char *res = wakati->parse(argv[1]);
   std::cout << res << std::endl;
   delete wakati;
 

@@ -7,7 +7,7 @@ echo Executed text_getter.py
 echo "${text}"
 echo -----
 
-noun=$(./analysis.out)
+noun=$(./analysis.out ${text})
 echo Executed analysis.out
 echo "${noun}"
 echo -----

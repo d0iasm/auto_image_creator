@@ -43,8 +43,7 @@ def getData(words):
     for word in words:
         print('Reading:', word)
 
-        try:
-            
+        try:            
             response.append(service.cse().list(
                 q= word,
                 cx= config._CUSTOM_SEARCH_ENGINE,
@@ -55,9 +54,6 @@ def getData(words):
 
         except Exception as e:
             print(e)
-
-    with open('data.json', 'w') as outfile:
-        json.dump(response, outfile)
 
     for r in response:
         if len(r['items']) > 0:
