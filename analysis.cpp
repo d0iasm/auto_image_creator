@@ -7,9 +7,9 @@
 #include <vector>
 
 
-#define CHECK(eval) if(! eval) {                                        \
-    const char *e tagger ? tagger->what() : MeCab::getTaggerError();    \
-    std::cerr << "Exception: " << e << std::endl;                       \
+#define CHECK(eval) if (! eval) {                                       \
+    const char *e = tagger ? tagger->what() : MeCab::getTaggerError();  \
+    std::cerr << "Exception:" << e << std::endl;                        \
     delete tagger;                                                      \
     return -1; }
 
@@ -34,30 +34,16 @@ std::vector<std::string> split(const std::string &str, char delim) {
 }
 
 
-std::string filterNoun(const MeCab::Node *node, char *input) {
+std::string filterNoun(const MeCab::Node *node) {
   std::string filtered;
-
-  std::string feature;
-  std::vector<std::string> noun;
+  std::vector<std::string> feature;
   for (; node; node = node->next) {
-    feature = node->feature;
-    noun = split(feature, ',');
-    if (noun[0] == "名詞") {
-      // filtered = filtered + '\n' + (node->surface - *input);
-      std::cout << node->surface <<std::endl;
-      std::cout << (int)(node->surface - input + node->length) <<std::endl;
-      std::cout << (int)(node->surface - input) <<std::endl;
-      std::cout << node->rcAttr <<std::endl;
-      std::cout << node->lcAttr <<std::endl;
-      std::cout << node->alpha <<std::endl;
-      std::cout << node->posid <<std::endl;
-      std::cout << node->beta <<std::endl;
-      std::cout << node->prob <<std::endl;
-      std::cout << node->cost <<std::endl;
-      std::cout << "-----" <<std::endl;
+    feature = split(node->feature, ',');
+    if (feature[0] == "名詞") {
+      std::cout << feature[6] << std::endl;
+      filtered.append(feature[6] + " ");
     }
   }
-
   return filtered;
 }
 
@@ -65,22 +51,12 @@ std::string filterNoun(const MeCab::Node *node, char *input) {
 int main(int argc, char **argv) {
   std::setlocale(LC_CTYPE, "ja_JP.UTF-8");
 
-  // char input[1024];
-  // std::cin >> input;
-
-  // MeCab::Tagger *tagger = MeCab::createTagger("");
-  // const MeCab::Node *node = tagger->parseToNode(input);
-  // std::string filtered = filterNoun(node, input);
-  // std::cout << filtered << std::endl;
-  // delete tagger;
-
-  // std::cout << argv[1] << std::endl;
-  // char input[1024] = "吾輩は猫である。";
-  MeCab::Tagger *wakati = MeCab::createTagger("-Owakati");
-  // const char *res = wakati->parse(argv[1]);
-  const char *res = wakati->parse(argv[1]);
-  std::cout << res << std::endl;
-  delete wakati;
+  MeCab::Tagger *tagger = MeCab::createTagger("");
+  CHECK(tagger);
+  const MeCab::Node *node = tagger->parseToNode(argv[1]);
+  std::string filtered = filterNoun(node);
+  std::cout << filtered << std::endl;
+  delete tagger;
 
   return 0;
 } 

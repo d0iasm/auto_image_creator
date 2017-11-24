@@ -13,7 +13,7 @@ echo "${noun}"
 echo -----
 
 python image_getter.py <<EOF
-"$noun"
+"${noun}"
 EOF
 echo Executed image_getter.py
 echo -----
