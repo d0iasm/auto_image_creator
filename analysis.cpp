@@ -53,7 +53,10 @@ int main(int argc, char **argv) {
 
   MeCab::Tagger *tagger = MeCab::createTagger("");
   CHECK(tagger);
+  
   const MeCab::Node *node = tagger->parseToNode(argv[1]);
+  CHECK(node);
+  
   std::string filtered = filterNoun(node);
   std::cout << filtered << std::endl;
   delete tagger;
