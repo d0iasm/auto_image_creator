@@ -8,7 +8,7 @@
 
 
 cv::Mat createNewbg() {
-  return cv::Mat::zeros(1000, 1000, CV_8UC3);
+  return cv::Mat::ones(1000, 1000, CV_8UC3);
 }
 
 
@@ -17,6 +17,36 @@ cv::Vec3b randomColor(){
   std::mt19937 mt(seed());
   std::uniform_int_distribution<int> rand5(0, 1);
   return cv::Vec3b(rand5(mt) * 255, rand5(mt) * 255, rand5(mt) * 255);
+}
+
+
+cv::Mat detect(const cv::Mat &img) {
+  cv::Mat gray, mono;
+  cv::Mat result = cv::Mat::zeros(img.rows, img.cols, CV_8UC3);
+
+  cv::cvtColor(img, gray, cv::COLOR_BGR2GRAY);
+  cv::threshold(gray, mono, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+  cv::namedWindow("image", 1);
+  cv::imshow("image", mono);
+  cv::waitKey(0);
+  cv::destroyAllWindows();
+  
+  std::vector<std::vector<cv::Point> > contours;
+  std::vector<cv::Vec4i> hierarchy;
+
+  cv::findContours(mono, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+
+  int idx = 0;
+  for( ; idx >= 0; idx = hierarchy[idx][0]) {
+    cv::drawContours(result, contours, idx, cv::Scalar(255, 0, 0), CV_FILLED, 8, hierarchy);
+  }
+  
+  cv::namedWindow("image", 1);
+  cv::imshow("image", result);
+  cv::waitKey(0);
+  cv::destroyAllWindows();
+
+  return result;
 }
 
 
@@ -76,13 +106,15 @@ int main(void) {
   cv::resize(src2, resize2, cv::Size(500, 500));
   cv::resize(src3, resize3, cv::Size(500, 500));
   cv::resize(src4, resize4, cv::Size(500, 500));
+
+  detect(src1);
   
   cv::Mat result = createNewbg();
-
+  
   result = pasteImage(result, colorThresholding(resize1), 0, 0);
   result = pasteImage(result, colorThresholding(resize2), 500, 0);
   result = pasteImage(result, colorThresholding(resize3), 0, 500);
-  result = pasteImage(result, colorThresholding(resize4), 500, 500);
+  // result = pasteImage(result, colorThresholding(resize4), 500, 500);
 
   cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
   cv::imshow("image", result);
