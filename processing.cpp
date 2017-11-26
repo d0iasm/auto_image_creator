@@ -34,11 +34,11 @@ cv::Mat detect(const cv::Mat &img) {
   std::vector<std::vector<cv::Point> > contours;
   std::vector<cv::Vec4i> hierarchy;
 
-  cv::findContours(mono, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+  cv::findContours(mono, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
 
   int idx = 0;
   for( ; idx >= 0; idx = hierarchy[idx][0]) {
-    cv::drawContours(result, contours, idx, cv::Scalar(255, 0, 0), CV_FILLED, 8, hierarchy);
+    cv::drawContours(result, contours, idx, cv::Scalar(255, 255, 0), CV_FILLED, 8, hierarchy);
   }
   
   cv::namedWindow("image", 1);

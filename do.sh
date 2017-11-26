@@ -2,8 +2,8 @@
 
 echo -----
 
-text=$(python text_getter.py)
-echo Executed text_getter.py
+text=$(python -c 'import tw_handler; tw_handler.getData(1)')
+echo Executed tw_handler getData 1
 echo "${text}"
 echo -----
 
@@ -20,3 +20,8 @@ echo -----
 
 ./processing.out
 echo Executed processing.out
+echo -----
+
+python -c 'import tw_handler; tw_handler.sendImage()'
+echo Executed tw_handler sendImage
+echo -----
