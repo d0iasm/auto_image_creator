@@ -20,6 +20,41 @@ cv::Vec3b randomColor(){
 }
 
 
+void kmeans(const cv::Mat &img) {
+  cv::Mat points;
+  img.convertTo(points, CV_32FC3);
+  points = points.reshape(3, img.rows * img.cols);
+
+  const int cluster_count = 3;
+
+  cv::Mat_<int> clusters(points.size(), CV_32SC1);
+  cv::Mat centers;
+
+  cv::kmeans(points, cluster_count, clusters, 
+	     cvTermCriteria(CV_TERMCRIT_EPS|CV_TERMCRIT_ITER, 10, 1.0),
+             1, cv::KMEANS_PP_CENTERS, centers);
+  cv::kmeans(points, cluster_count, clusters,
+    cvTermCriteria(CV_TERMCRIT_EPS|CV_TERMCRIT_ITER, 10, 1.0),
+    1, cv::KMEANS_PP_CENTERS, centers);
+
+  cv::Mat dst_img(img.size(), img.type());
+  cv::MatIterator_<cv::Vec3b> itd = dst_img.begin<cv::Vec3b>();
+  cv::MatIterator_<cv::Vec3b> itd_end = dst_img.end<cv::Vec3b>();
+  
+  for (int i=0; itd != itd_end; ++itd, ++i) {
+    cv::Vec3f &color = centers.at<cv::Vec3f>(clusters(i), 0);
+    (*itd)[0] = cv::saturate_cast<uchar>(color[0]);
+    (*itd)[1] = cv::saturate_cast<uchar>(color[1]);
+    (*itd)[2] = cv::saturate_cast<uchar>(color[2]);
+  }
+
+  cv::namedWindow("image", cv::WINDOW_AUTOSIZE);
+  cv::imshow("image", dst_img);
+  cv::waitKey(0);
+  cv::destroyAllWindows();
+}
+
+
 cv::Mat detect(const cv::Mat &img) {
   cv::Mat gray, mono;
   cv::Mat result = cv::Mat::zeros(img.rows, img.cols, CV_8UC3);
@@ -107,7 +142,8 @@ int main(void) {
   cv::resize(src3, resize3, cv::Size(500, 500));
   cv::resize(src4, resize4, cv::Size(500, 500));
 
-  detect(src1);
+  // detect(src1);
+  kmeans(src1);
   
   cv::Mat result = createNewbg();
   
