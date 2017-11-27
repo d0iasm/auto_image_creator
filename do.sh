@@ -2,8 +2,8 @@
 
 echo -----
 
-text=$(python -c 'import tw_handler; tw_handler.getData(1)')
-echo Executed tw_handler getData 1
+text=$(python -c 'import tw_handler; tw_handler.getData()')
+echo Executed tw_handler getData
 echo "${text}"
 echo -----
 
